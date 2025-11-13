@@ -22,4 +22,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// USceneComponent* RootComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TArray<USceneComponent*> JointTransforms;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	TArray<UStaticMeshComponent*> LinkMeshes;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* ToolCenterPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* ToolMesh;
+
+private:
+	void InitializeRobotStructure();
 };
