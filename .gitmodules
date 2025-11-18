@@ -1,0 +1,3 @@
+[submodule "Plugins/COMODO_Sync"]
+	path = Plugins/COMODO_Sync
+	url = https://github.com/Khevalir/comodo-sync
