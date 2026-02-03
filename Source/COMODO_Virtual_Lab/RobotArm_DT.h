@@ -25,18 +25,18 @@ public:
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// USceneComponent* RootComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TArray<USceneComponent*> JointTransforms;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	TArray<UStaticMeshComponent*> LinkMeshes;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	USceneComponent* ToolCenterPoint;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* ToolMesh;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// TArray<USceneComponent*> JointTransforms;
+	
+	// UPROPERTY(EditAnywhere, Category = "Components")
+	// TArray<UStaticMeshComponent*> LinkMeshes;
+	
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// USceneComponent* ToolCenterPoint;
+	
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// UStaticMeshComponent* ToolMesh;
 
 private:
-	void InitializeRobotStructure();
+	// void InitializeRobotStructure();
 };
