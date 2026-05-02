@@ -50,3 +50,10 @@ void ARobotArm_DT::BeginPlay() {
 void ARobotArm_DT::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
+
+// void ARobotArm_DT::MoveJoints_Implementation(const TArray<double>& JointAngles)
+// {
+// }
+
+
+

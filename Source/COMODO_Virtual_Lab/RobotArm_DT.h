@@ -68,6 +68,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "COMODO|Kinematics")
 	TArray<double> GetCurrentThetas() {return RobotDhParams.theta;}
-private:
 	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "COMODO|Robot")
+	void MoveJoints(const TArray<double>& JointAngles);
+	
+private:
+	// virtual void MoveJoints_Implementation(const TArray<double>& JointAngles);
 };

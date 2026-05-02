@@ -125,13 +125,13 @@ bool UKinematics::GetClosestIKAnglesToLocation(F6AxesRobotParams RobotParams, FM
 				TArray<double> Solution;
 				Solution.Empty(6);
 				Solution.Add(FMath::RadiansToDegrees(Theta1));
-				Solution.Add(90 - FMath::RadiansToDegrees(Theta2));
-				Solution.Add(-FMath::RadiansToDegrees(Theta3));
+				Solution.Add(FMath::RadiansToDegrees(Theta2));
+				Solution.Add(FMath::RadiansToDegrees(Theta3));
 				Solution.Add(FMath::RadiansToDegrees(Theta4));
-				Solution.Add(-FMath::RadiansToDegrees(Theta5));
+				Solution.Add(FMath::RadiansToDegrees(Theta5));
 				Solution.Add(FMath::RadiansToDegrees(Theta6));
-		// 		UE_LOG(LogTemp, Warning, TEXT("%f %f %f %f %f %f"), 
-		// Theta1*180/PI, 90-Theta2*180/PI, -Theta3*180/PI, Theta4*180/PI, -Theta5*180/PI, Theta6*180/PI);	
+				UE_LOG(LogTemp, Warning, TEXT("%f %f %f %f %f %f"), 
+				Theta1*180/PI, 90-Theta2*180/PI, -Theta3*180/PI, Theta4*180/PI, -Theta5*180/PI, Theta6*180/PI);	
 				Solutions.Add(Solution);
 			}
 			
@@ -143,9 +143,9 @@ bool UKinematics::GetClosestIKAnglesToLocation(F6AxesRobotParams RobotParams, FM
 	}
 	
 	TArray<double> BestSolution = SelectOptimalSolution(Solutions, CurrentAxis);
-	//BestSolution[1] = 90.f - BestSolution[1];
-	//BestSolution[2] = -BestSolution[2];
-	//BestSolution[4] = -BestSolution[4];
+	BestSolution[1] = 90.f - BestSolution[1];
+	BestSolution[2] = -BestSolution[2];
+	BestSolution[4] = -BestSolution[4];
 	
 	OutAxis = BestSolution;
 	return true;
