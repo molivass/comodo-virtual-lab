@@ -23,14 +23,17 @@ class COMODO_VIRTUAL_LAB_API UGizmoComponent : public UStaticMeshComponent {
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "COMODO|Gizmo")
 	EGizmoAxis GizmoAxis;
 	
 	virtual void Dragged(const FVector2D MouseDelta) {}
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "COMODO|Gizmo")
 	void HideComponent();
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "COMODO|Gizmo")
 	void ShowComponent();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "COMODO|Gizmo")
+	void UpdateUI(const double NewAngle, const int JointIndex);
 };

@@ -33,6 +33,7 @@ void URotationGizmoComponent::Dragged(const FVector2D MouseDelta) {
 	while (MousePositions.Num() > 10) {
 		MousePositions.Pop();
 	}
+	
 	float Direction = 0;
 	if (MousePositions.Num() > 3 ) {
 		float Area = 0;
@@ -56,23 +57,63 @@ void URotationGizmoComponent::Dragged(const FVector2D MouseDelta) {
 	const FVector2D RelativeMousePos = MousePosition - ScreenPosition;
 	
 	const float RotationAmount = (RelativeMousePos - (RelativeMousePos - MouseDelta)).Length() * Direction;
+
+	double NewAngle;
+	// double NewRot;
+	const int JointIndex = FCString::Atoi(*Parent->ComponentTags[0].ToString());
 	
-	const FQuat LocalRotation = ActorTransform.InverseTransformRotation(Parent->GetComponentQuat());
-	const FVector LocalRotationAxis = ActorTransform.InverseTransformVector(RotationAxis);
-	
-	FRotator RotDelta = Parent->GetComponentRotation().Vector().RotateAngleAxisRad(RotationAmount, RotationAxis).Rotation();
-	UE_LOG(LogTemp, Display, TEXT("%s"), *RotDelta.ToString())
-	// FRotator NewRot = ActorTransform.TransformRotation();
-	
-	const FQuat RotationDelta(LocalRotationAxis, FMath::DegreesToRadians(RotationAmount));
-	const FQuat NewLocalRotation = RotationDelta * LocalRotation;
-	
-	UE_LOG(LogTemp, Display, TEXT("NewLocalRot: %f %f %f"), NewLocalRotation.Rotator().Roll, NewLocalRotation.Rotator().Pitch, NewLocalRotation.Rotator().Yaw);
-	
-	const FQuat NewWorldRotation = ActorTransform.TransformRotation(NewLocalRotation);
-	UE_LOG(LogTemp, Display, TEXT("NewWorldRot: %f %f %f"), NewWorldRotation.Rotator().Roll, NewWorldRotation.Rotator().Pitch, NewWorldRotation.Rotator().Yaw);
-	
-	Parent->SetWorldRotation(NewWorldRotation);
+	switch (GizmoAxis) {
+		case EGizmoAxis::X:
+			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
+			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
+				Parent->SetRelativeRotation(FRotator(0, 0, NewAngle));
+			}
+			break;
+		case EGizmoAxis::Y:
+			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
+			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
+				Parent->SetRelativeRotation(FRotator(NewAngle,0,0));
+				// const FQuat LocalRotQuat = ActorTransform.InverseTransformRotation(Parent->GetComponentQuat());
+				// const FQuat NewRotQuat = LocalRotQuat - FQuat(FRotator(RotationAmount, 0, 0));
+				// const FVector LocalRotationAxis = ActorTransform.InverseTransformVector(RotationAxis);
+				// const FQuat RotationDelta(LocalRotationAxis, FMath::DegreesToRadians(RotationAmount));
+				// FQuat test = LocalRotQuat * RotationDelta;
+				// NewRot = test.Rotator().Pitch;
+				// UE_LOG(LogTemp, Display, TEXT("NewRot: %f"), NewRot);
+				// // UE_LOG(LogTemp, Display, TEXT("MinMax: %hdd"), NewRot >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]);
+				// 	Parent->SetRelativeRotation(test);	
+				
+			}
+			break;
+		case EGizmoAxis::Z:
+			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] + RotationAmount;
+			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
+				Parent->SetRelativeRotation(FRotator(0, NewAngle, 0));
+			}
+			break;
+		case EGizmoAxis::All:
+			break;
+	}
+	UpdateUI(NewAngle, JointIndex);
+	// const FQuat LocalRotation = ActorTransform.InverseTransformRotation(Parent->GetComponentQuat());
+	// const FVector LocalRotationAxis = ActorTransform.InverseTransformVector(RotationAxis);
+	//
+	// FRotator RotDelta = Parent->GetComponentRotation().Vector().RotateAngleAxisRad(RotationAmount, RotationAxis).Rotation();
+	// UE_LOG(LogTemp, Display, TEXT("%s"), *RotDelta.ToString())
+	// // FRotator NewRot = ActorTransform.TransformRotation();
+	//
+	// const FQuat RotationDelta(LocalRotationAxis, FMath::DegreesToRadians(RotationAmount));
+	// const FQuat NewLocalRotation = RotationDelta * LocalRotation;
+	//
+	//  UE_LOG(LogTemp, Display, TEXT("NewLocalRot: %f %f %f"), NewLocalRotation.Rotator().Roll, NewLocalRotation.Rotator().Pitch, NewLocalRotation.Rotator().Yaw);
+	//
+	// const FQuat NewWorldRotation = ActorTransform.TransformRotation(NewLocalRotation);
+	// UE_LOG(LogTemp, Display, TEXT("NewWorldRot: %f %f %f"), NewWorldRotation.Rotator().Roll, NewWorldRotation.Rotator().Pitch, NewWorldRotation.Rotator().Yaw);
+	//
+	// Parent->SetWorldRotation(NewWorldRotation);
 }
 
 void URotationGizmoComponent::Released() {

@@ -60,8 +60,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
 	UStaticMeshComponent* GhostLink6;
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Kinematics")
-	// TArray<double> theta = {0.f,90.f,-0.f,0.f,-0.f,0.f};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Kinematics")
+	TArray<double> DesiredTheta = {0.f,0.f,0.f,0.f,0.f,0.f};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Kinematics")
 	F6AxesRobotParams RobotDhParams;
