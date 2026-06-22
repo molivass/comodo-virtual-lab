@@ -36,11 +36,6 @@ ARobotArm_DT::ARobotArm_DT() {
 	GhostLink5->SetupAttachment(GhostLink4);
 	GhostLink6 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GhostLink6"));
 	GhostLink6->SetupAttachment(GhostLink5);
-
-	// ToolCenterPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ToolCenterPoint"));
-	// ToolCenterPoint->SetupAttachment(RootComponent);
-	// ToolMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ToolMesh"));
-	// ToolMesh->SetupAttachment(ToolCenterPoint);
 }
 
 void ARobotArm_DT::BeginPlay() {
@@ -50,10 +45,6 @@ void ARobotArm_DT::BeginPlay() {
 void ARobotArm_DT::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
-
-// void ARobotArm_DT::MoveJoints_Implementation(const TArray<double>& JointAngles)
-// {
-// }
 
 
 

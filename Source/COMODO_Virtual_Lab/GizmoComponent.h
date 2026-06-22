@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,9 +13,7 @@ enum class EGizmoAxis : uint8 {
 	All
 };
 
-/**
- * 
- */
+
 UCLASS()
 class COMODO_VIRTUAL_LAB_API UGizmoComponent : public UStaticMeshComponent {
 	GENERATED_BODY()

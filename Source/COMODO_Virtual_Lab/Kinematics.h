@@ -53,13 +53,10 @@ class COMODO_VIRTUAL_LAB_API UKinematics : public UBlueprintFunctionLibrary {
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = "COMODO|Kinematics")
-	static FMatrix GetTransformMatrix(double theta, double alfa, double d, double a);
+	static FMatrix GetTransformMatrix(double theta, double alpha, double d, double a);
 	
 	UFUNCTION(BlueprintCallable, Category = "COMODO|Kinematics")
 	static FMatrix GetTransformMatrixAtPosition(F6AxesRobotParams RobotParams, TArray<double> JointAngles);
-	
-	// UFUNCTION(BlueprintCallable, Category = "COMODO|Kinematics")
-	// static void GetCurrentPosition(FRobotParams RobotParams, double& OutX , double& OutY, double& OutZ)
 	
 	UFUNCTION(BlueprintCallable, Category = "COMODO|Kinematics")
 	static FMatrix GetRotationMatrix(const FRotator& Rotation);
@@ -71,8 +68,8 @@ public:
 	static FVector GetLocationFromTransformMatrix(const FMatrix& TransformMatrix);
 	
 	UFUNCTION(BlueprintCallable, Category = "COMODO|Kinematics")
-	static bool GetClosestIKAnglesToLocation(F6AxesRobotParams RobotParams, FMatrix TargetPosTransformMatrix, const TArray<double>& CurrentAxis,
-		TArray<double>& OutAxis);
+	static bool GetClosestIKAnglesToLocation(F6AxesRobotParams RobotParams, FMatrix TargetPosTransformMatrix, const TArray<double>& CurrentAxes,
+		TArray<double>& OutAxes);
 	
 private:
 	// static double CalcTheta31(double K1, double K2, double K3);

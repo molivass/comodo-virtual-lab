@@ -3,7 +3,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 void URotationGizmoComponent::Dragged(const FVector2D MouseDelta) {
-	// Super::Dragged(MouseDelta);
+
 	const AVirtualLab_GameModeBase* GameMode = Cast<AVirtualLab_GameModeBase>(GetWorld()->GetAuthGameMode());
 	if (!GameMode) return;
 	
@@ -11,85 +11,62 @@ void URotationGizmoComponent::Dragged(const FVector2D MouseDelta) {
 	if(!PlayerController) return;
 	
 	USceneComponent* Parent = GetAttachParentActor()->GetParentComponent()->GetAttachParent();
-	const FTransform ActorTransform = GameMode->Robot->GetActorTransform();
+	
 	const FRotator CameraRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 	const FVector CameraForward = UKismetMathLibrary::GetForwardVector(CameraRotation);
-	// const FVector CameraUp = UKismetMathLibrary::GetUpVector(CameraRotation);
-	// const FVector CameraRight = UKismetMathLibrary::GetRightVector(CameraRotation);
-	
 	const FVector RotationAxis = GetForwardVector();
 	
+	MouseAccumulatedDeltas.EmplaceAt(0, MouseDelta);
 	
-	FVector2D MousePosition;
-	PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
-	/////
-	// FVector2D ScreenAxisDirection;
-	// ScreenAxisDirection.X = FVector::DotProduct(AxisDirection,CameraRight);
-	// ScreenAxisDirection.Y = FVector::DotProduct(AxisDirection,CameraUp);
-	// ScreenAxisDirection.Normalize();
-	
-	MousePositions.EmplaceAt(0, MouseDelta);
-	
-	while (MousePositions.Num() > 10) {
-		MousePositions.Pop();
+	while (MouseAccumulatedDeltas.Num() > 10) {
+		MouseAccumulatedDeltas.Pop();
 	}
 	
 	float Direction = 0;
-	if (MousePositions.Num() > 3 ) {
+	if (MouseAccumulatedDeltas.Num() > 3 ) {
 		float Area = 0;
-		for (int i = 0; i < MousePositions.Num() - 1; i++) {
-			Area += FVector2D::CrossProduct(MousePositions[i], MousePositions[i + 1]);
+		for (int i = 0; i < MouseAccumulatedDeltas.Num() - 1; i++) {
+			Area += FVector2D::CrossProduct(MouseAccumulatedDeltas[i], MouseAccumulatedDeltas[i + 1]);
 		}
-		//UE_LOG(LogTemp, Warning, TEXT("Area: %f"), Area);
+
 		const float ViewAlignment = FMath::Sign(FVector::DotProduct(CameraForward, RotationAxis));
 		Direction = FMath::Sign(Area) * ViewAlignment * -1.f;
 	}
-	//float Direction = FMath::Sign(FVector2D::CrossProduct(ScreenAxisDirection, RelativeMousePos));
-	
-	// if (LastMouseDelta != MouseDelta) {
-	// 	float ViewAlignment = FMath::Sign(FVector::DotProduct(CameraForward, AxisDirection));
-	// 	Direction = FMath::Sign(FVector2D::CrossProduct(LastMouseDelta, MouseDelta)) * ViewAlignment;
-	// 	LastMouseDelta = MouseDelta;
-	// }
-	
+
+	FVector2D MousePosition;
+	PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
 	FVector2D ScreenPosition;
 	PlayerController->ProjectWorldLocationToScreen(GetComponentLocation(),ScreenPosition);
 	const FVector2D RelativeMousePos = MousePosition - ScreenPosition;
 	
 	const float RotationAmount = (RelativeMousePos - (RelativeMousePos - MouseDelta)).Length() * Direction;
-
-	double NewAngle;
-	// double NewRot;
+	
 	const int JointIndex = FCString::Atoi(*Parent->ComponentTags[0].ToString());
+	const double AxisMin = GameMode->Robot->RobotDhParams.AxisMin[JointIndex];
+	const double AxisMax = GameMode->Robot->RobotDhParams.AxisMax[JointIndex];
+	double NewAngle = GameMode->Robot->DesiredTheta[JointIndex];
 	
 	switch (GizmoAxis) {
 		case EGizmoAxis::X:
-			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
-			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+			//NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
+			if(NewAngle - RotationAmount <= AxisMax && NewAngle - RotationAmount >= AxisMin) {
+				NewAngle -= RotationAmount;
 				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
 				Parent->SetRelativeRotation(FRotator(0, 0, NewAngle));
 			}
 			break;
 		case EGizmoAxis::Y:
-			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
-			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+			//NewAngle = GameMode->Robot->DesiredTheta[JointIndex] - RotationAmount;
+			if(NewAngle - RotationAmount <= AxisMax && NewAngle - RotationAmount >= AxisMin) {
+				NewAngle -= RotationAmount;
 				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
 				Parent->SetRelativeRotation(FRotator(NewAngle,0,0));
-				// const FQuat LocalRotQuat = ActorTransform.InverseTransformRotation(Parent->GetComponentQuat());
-				// const FQuat NewRotQuat = LocalRotQuat - FQuat(FRotator(RotationAmount, 0, 0));
-				// const FVector LocalRotationAxis = ActorTransform.InverseTransformVector(RotationAxis);
-				// const FQuat RotationDelta(LocalRotationAxis, FMath::DegreesToRadians(RotationAmount));
-				// FQuat test = LocalRotQuat * RotationDelta;
-				// NewRot = test.Rotator().Pitch;
-				// UE_LOG(LogTemp, Display, TEXT("NewRot: %f"), NewRot);
-				// // UE_LOG(LogTemp, Display, TEXT("MinMax: %hdd"), NewRot >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]);
-				// 	Parent->SetRelativeRotation(test);	
-				
 			}
 			break;
 		case EGizmoAxis::Z:
-			NewAngle = GameMode->Robot->DesiredTheta[JointIndex] + RotationAmount;
-			if(NewAngle <= GameMode->Robot->RobotDhParams.AxisMax[JointIndex] && NewAngle >= GameMode->Robot->RobotDhParams.AxisMin[JointIndex]) {
+			//NewAngle = GameMode->Robot->DesiredTheta[JointIndex] + RotationAmount;
+			if(NewAngle + RotationAmount <= AxisMax && NewAngle + RotationAmount >= AxisMin) {
+				NewAngle += RotationAmount;
 				GameMode->Robot->DesiredTheta[JointIndex] = NewAngle;
 				Parent->SetRelativeRotation(FRotator(0, NewAngle, 0));
 			}
@@ -97,25 +74,10 @@ void URotationGizmoComponent::Dragged(const FVector2D MouseDelta) {
 		case EGizmoAxis::All:
 			break;
 	}
+	
 	UpdateUI(NewAngle, JointIndex);
-	// const FQuat LocalRotation = ActorTransform.InverseTransformRotation(Parent->GetComponentQuat());
-	// const FVector LocalRotationAxis = ActorTransform.InverseTransformVector(RotationAxis);
-	//
-	// FRotator RotDelta = Parent->GetComponentRotation().Vector().RotateAngleAxisRad(RotationAmount, RotationAxis).Rotation();
-	// UE_LOG(LogTemp, Display, TEXT("%s"), *RotDelta.ToString())
-	// // FRotator NewRot = ActorTransform.TransformRotation();
-	//
-	// const FQuat RotationDelta(LocalRotationAxis, FMath::DegreesToRadians(RotationAmount));
-	// const FQuat NewLocalRotation = RotationDelta * LocalRotation;
-	//
-	//  UE_LOG(LogTemp, Display, TEXT("NewLocalRot: %f %f %f"), NewLocalRotation.Rotator().Roll, NewLocalRotation.Rotator().Pitch, NewLocalRotation.Rotator().Yaw);
-	//
-	// const FQuat NewWorldRotation = ActorTransform.TransformRotation(NewLocalRotation);
-	// UE_LOG(LogTemp, Display, TEXT("NewWorldRot: %f %f %f"), NewWorldRotation.Rotator().Roll, NewWorldRotation.Rotator().Pitch, NewWorldRotation.Rotator().Yaw);
-	//
-	// Parent->SetWorldRotation(NewWorldRotation);
 }
 
 void URotationGizmoComponent::Released() {
-	MousePositions.Empty(10);
+	MouseAccumulatedDeltas.Empty(10);
 }

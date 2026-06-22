@@ -1,14 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "BlueprintsRegex.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class COMODO_VIRTUAL_LAB_API UBlueprintsRegex : public UBlueprintFunctionLibrary
 {

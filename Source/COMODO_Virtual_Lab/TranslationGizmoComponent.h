@@ -1,14 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GizmoComponent.h"
 #include "TranslationGizmoComponent.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class COMODO_VIRTUAL_LAB_API UTranslationGizmoComponent : public UGizmoComponent
 {

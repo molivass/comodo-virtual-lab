@@ -4,9 +4,6 @@
 #include "GizmoComponent.h"
 #include "RotationGizmoComponent.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class COMODO_VIRTUAL_LAB_API URotationGizmoComponent : public UGizmoComponent {
 	GENERATED_BODY()
@@ -21,5 +18,5 @@ public:
 	
 private:
 	FVector2D LastMouseDelta;
-	TArray<FVector2D> MousePositions;
+	TArray<FVector2D> MouseAccumulatedDeltas;
 };
