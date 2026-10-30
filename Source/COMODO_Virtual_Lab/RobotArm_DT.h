@@ -36,6 +36,10 @@ public:
 	UStaticMeshComponent* Link5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
 	UStaticMeshComponent* Link6;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
+	UStaticMeshComponent* Tool;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
+	USceneComponent* TCP;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
 	UStaticMeshComponent* GhostBase;
@@ -51,6 +55,8 @@ public:
 	UStaticMeshComponent* GhostLink5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
 	UStaticMeshComponent* GhostLink6;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Components")
+	UStaticMeshComponent* GhostTool;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "COMODO|Kinematics")
 	TArray<double> DesiredTheta = {0.f,0.f,0.f,0.f,0.f,0.f};

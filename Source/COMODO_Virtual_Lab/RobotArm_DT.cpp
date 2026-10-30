@@ -21,6 +21,10 @@ ARobotArm_DT::ARobotArm_DT() {
 	Link5->SetupAttachment(Link4);
 	Link6 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Link6"));
 	Link6->SetupAttachment(Link5);
+	Tool = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tool"));
+	Tool->SetupAttachment(Link6);
+	TCP = CreateDefaultSubobject<USceneComponent>(TEXT("TCP"));
+	TCP->SetupAttachment(Link6);
 	
 	GhostBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GhostBase"));
 	GhostBase->SetupAttachment(RootComponent);
@@ -36,6 +40,8 @@ ARobotArm_DT::ARobotArm_DT() {
 	GhostLink5->SetupAttachment(GhostLink4);
 	GhostLink6 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GhostLink6"));
 	GhostLink6->SetupAttachment(GhostLink5);
+	GhostTool = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GhostTool"));
+	GhostTool->SetupAttachment(GhostLink6);
 }
 
 void ARobotArm_DT::BeginPlay() {
